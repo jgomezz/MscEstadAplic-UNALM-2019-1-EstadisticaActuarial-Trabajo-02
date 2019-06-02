@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{actuarialangle}
+\usepackage{actuarialsymbol}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+
+ \begin{itemize}
+ \item  $\actuarialangle{n}$
+ \item  $\actsymb{A}{x}$
+ \item  $\actsymb[n]{A}{x}$
+ \item  $\actsymb[n][2]{A}{x}$
+ \item  $\actsymb[n][2]{A}{x}[(m)]$
+ \end{itemize}
+
+
+<<>>=
+
+@
+
+
+
+\end{document}
