@@ -1,24 +1,59 @@
 \documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+
 \usepackage{actuarialangle}
 \usepackage{actuarialsymbol}
 
+\title{UNALM - Maestr\'ia en Estad\'istica Aplicada \ Trabajo Encargado 2}
+\author{Jaime G\'omez Mar\'in }
+\date{5 Junio 2019}
+
 \begin{document}
+
+\maketitle
+
 \SweaveOpts{concordance=TRUE}
 
+ % \item  $\actuarialangle{n}$
+ % \item  $\actsymb{A}{x}$
+ % \item  $\actsymb[n]{A}{x}$
+ % \item  $\actsymb[n][2]{A}{x}$
+ % \item  $\actsymb[n][2]{A}{x}[(m)]$
 
- \begin{itemize}
- \item  $\actuarialangle{n}$
- \item  $\actsymb{A}{x}$
- \item  $\actsymb[n]{A}{x}$
- \item  $\actsymb[n][2]{A}{x}$
- \item  $\actsymb[n][2]{A}{x}[(m)]$
- \end{itemize}
+\begin{enumerate}
 
+\item (2.0 puntos) Rosa, una joven sana, nacida en enero de 1990, desea contratar un seguro de vida de tal manera que sus beneficiarios reciban 150 mil soles cuando ella fallezca. Considerando una TNA de 1:25\% capitalizable semestralmente, calcule el valor de la prima justa.
 
 <<>>=
 
 @
 
+\item (3.0 puntos) Christian, un se\~nor inv\'alido, nacido en setiembre de 1969, desea contratar un seguro de vida de tal manera que sus beneficiarios reciban 150 mil soles cuando ella fallezca, siempre y cuando ella tenga al menos 60 pero no m\'as de 80 años. Considerando una TNA de 1:25\% capitalizable semestralmente, calcule el valor de la prima justa.
+
+
+\item (2.0 puntos) Fernando, un se\~nor sano, nacido en diciembre de 1950, desea contratar un seguro de tal manera que reciba 15 mil soles si alcanza la edad de 90 años. Considere que la tasa efectiva trimestral de la aseguradora es de 1:5\%. Calcule el valor de la prima justa.
+
+\item (2.0 puntos) Una mujer inv\'alida de 43 años paga una prima de 17002.39 soles para recibir un beneficio de S soles si se encuentra viva dentro de 30 años. Considere una tasa de inter\'es efectiva de 3\% anual y determine el valor de S.
+
+\item (4.0 puntos) Utilizando la tabla de mortalidad de la SBS, plantee un ejemplo en el que se muestre:
+
+\begin {itemize}
+\item Conversi\'on de tasas (compuesta, nominal, efectiva).
+\item Seguro de vida dotal de n a\~nos (especifique n).
+\item El c\'alculo de la prima justa para este seguro.
+\end {itemize}
+
+\item (3.0 puntos) El tiempo de vida de una poblaci\'on sigue la funci\'on de supervivencia:
+
+\[ S(x) = (1-\frac{x}{96})^{0.45}\]
+
+para 0 $\leq$ x $\leq$ 96. Una persona de 50 a\~nos desea contratar un seguro de vida de tal manera que sus beneficiarios reciban 80 mil soles a su fallecimiento, considerando una TEA de 4\% anual. ¿Cu\'al es la prima única que debe pagar?
+
+
+\end{enumerate}
 
 
 \end{document}
