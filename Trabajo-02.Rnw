@@ -289,6 +289,66 @@ Beneficio : S/\Sexpr{round(Beneficio,digits=NRO_DECIMALES)}
 
 para 0 $\leq$ x $\leq$ 96. Una persona de 50 a\~nos desea contratar un seguro de vida de tal manera que sus beneficiarios reciban 80 mil soles a su fallecimiento, considerando una TEA de 4\% anual. ¿Cu\'al es la prima única que debe pagar?
 
+\textbf{Soluci\'on:}
+
+Es un seguro vitalicio continuo : 
+
+    \[ \Ax*{x} = \int_{0}^\infty e^{-\delta*t}f_{T(x)}(t)\,\mathrm{dt}\]
+    
+    Donde:  $\delta=ln(1+TEA)$
+
+    \[ F_{T(x)}(t) = _{t}q_{x} = 1 - \frac{S_{(x+t)}}{S_{(x)}} \]
+  
+    \[ F_{T(x)}(t) = 1 - \frac{(1-\frac{x+t}{96})^{0.45}}{(1-\frac{x}{96})^{0.45}} \]
+    
+    \[ F_{T(x)}(t) = 1 - \frac{(96-(x+t))^{0.45}}{(96-x)^{0.45}} \]
+
+Calculamos $f_{T(x)}(t)$ : \\
+    
+    \[ f_{T(x)}(t) =  \frac{dF_{T(x)}(t)}{dt}  \]
+
+    \[ f_{T(x)}(t) =  \frac{(-1)*0.45*(96-(x+t))^{0.45-1}*(-1)}{(96-x)^{0.45}}  \]
+    
+    \[ f_{T(x)}(t) =  \frac{0.45}{(96-x)^{0.45}*(96-(x+t))^{0.55}}  \]
+
+
+Datos del problema:
+\begin{itemize}
+\item COBERTURA = S/80000
+\item EDAD = 50 a\~nos
+\item TEA = 4.0\%
+\end{itemize}
+
+Como el rango es: [0,96] a\~nos, entonces el rango de la integral es entre 0 y (96-EDAD)
+<<>>=
+EDAD      <- 50
+TEA       <- 0.04
+W         <- 96
+VALOR_MIN <- 0
+VALOR_MAX <- W - EDAD
+@
+
+Definiendo funcion:
+<<>>=
+fx <- function(t){
+  fx <-  exp(-(log(1+TEA))*t) * (0.45/( ((96-EDAD)^0.45)*((96-(EDAD+t))^0.55)))
+  return(fx)
+}
+@
+
+Se calcula la prima unitaria:
+<<>>=
+EZ <- integrate(fx, VALOR_MIN, VALOR_MAX)$value 
+@
+Prima unitaria: \Sexpr{round(EZ,digits=NRO_DECIMALES)}
+
+Se calcula la prima
+<<>>=
+COBERTURA <- 80000
+Prima     <- COBERTURA*EZ
+@
+
+Prima : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
 
 \end{enumerate}
 
