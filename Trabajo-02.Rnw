@@ -176,7 +176,7 @@ Prima  : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
 
 \textbf{Soluci\'on:}
 
-Es un seguro dota puro: $\Ax{\pureendow{x}{n}}$
+Es un seguro dotal puro: $\Ax{\pureendow{x}{n}}$
 
 Datos del problema:
 \begin{itemize}
@@ -207,7 +207,7 @@ OFFSET    <- 2019-2017
 <<>>=
 HS2019 <- probs2lifetable(probs = SPPS2017H*((1-AaxH)^(OFFSET)), 
                           radix = 10^6, type = "qx",  name = "HS2019")
-head(HI2019)
+head(HS2019)
 @
 
 Se calcula la prima unitaria:
@@ -224,9 +224,56 @@ COBERTURA <- 15000
 Prima <- COBERTURA * EZ
 @
 
-Prima  : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
+Prima : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
 
 \item (2.0 puntos) Una mujer inv\'alida de 43 años paga una prima de 17002.39 soles para recibir un beneficio de S soles si se encuentra viva dentro de 30 años. Considere una tasa de inter\'es efectiva de 3\% anual y determine el valor de S.
+
+\textbf{Soluci\'on:}
+
+Es un seguro dotal puro: $\Ax{\pureendow{x}{n}}$
+
+Datos del problema:
+\begin{itemize}
+\item PRIMA = S/17002.39
+\item EDAD = 43 a\~nos
+\item TEA = 3.0\%
+\item n = 30 a\~nos  
+\end{itemize}
+
+Uso de tabla de mortandad:
+<<>>=
+# Se personaliza la tabla de mortandad 
+EDAD      <- 43
+OFFSET    <- 2019-2017
+@
+
+\begin{itemize}
+\item OFFSET = \Sexpr{OFFSET}
+\item EDAD = \Sexpr{EDAD} a\~nos
+\end{itemize}
+
+<<>>=
+MI2019 <- probs2lifetable(probs = SPPI2017M*((1-AaxM)^(OFFSET)), 
+                          radix = 10^6, type = "qx",  name = "MI2019")
+head(MI2019)
+@
+
+Se calcula la prima unitaria:
+<<>>=
+TEA <- 0.030
+n   <- 30
+EZ  <- Exn(MI2019, x=EDAD, n=n, i=TEA)
+@
+n : \Sexpr{n} \\
+Prima unitaria ($\Ax{\pureendow{\Sexpr{EDAD}}{\Sexpr{n}}}$) : S/\Sexpr{round(EZ,digits=NRO_DECIMALES)}
+
+Se calcula el beneficio:
+<<>>=
+PRIMA     <- 17002.39
+Beneficio <- PRIMA/EZ
+@
+
+Beneficio : S/\Sexpr{round(Beneficio,digits=NRO_DECIMALES)}
 
 \item (4.0 puntos) Utilizando la tabla de mortalidad de la SBS, plantee un ejemplo en el que se muestre:
 
