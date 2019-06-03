@@ -311,6 +311,10 @@ Calculamos $f_{T(x)}(t)$ : \\
     
     \[ f_{T(x)}(t) =  \frac{0.45}{(96-x)^{0.45}*(96-(x+t))^{0.55}}  \]
 
+Entonces
+
+    \[ \Ax*{x} = \int_{0}^\infty e^{-\delta*t}*\frac{0.45}{(96-x)^{0.45}*(96-(x+t))^{0.55}}\,\mathrm{dt}\]
+
 
 Datos del problema:
 \begin{itemize}
@@ -321,14 +325,21 @@ Datos del problema:
 
 Como el rango es: [0,96] a\~nos, entonces el rango de la integral es entre 0 y (96-EDAD)
 <<>>=
-EDAD      <- 50
+EDAD      <- 50   # Valor de X
 TEA       <- 0.04
 W         <- 96
 VALOR_MIN <- 0
 VALOR_MAX <- W - EDAD
 @
+Valor m\'inimo : $\Sexpr{VALOR_MIN}$ \\
+Valor m\'aximo : $\Sexpr{VALOR_MAX}$ \\
+Edad : $\Sexpr{EDAD}$ \\
 
-Definiendo funcion:
+
+    \[ \Ax*{\Sexpr{EDAD}} = \int_{\Sexpr{VALOR_MIN}}^{\Sexpr{VALOR_MAX}} e^{-(log(1+0.04))*t}*\frac{0.45}{(96-\Sexpr{EDAD})^{0.45}*(96-(\Sexpr{EDAD}+t))^{0.55}}\,\mathrm{dt}\]
+
+
+Definiendo la funci\'on:
 <<>>=
 fx <- function(t){
   fx <-  exp(-(log(1+TEA))*t) * (0.45/( ((96-EDAD)^0.45)*((96-(EDAD+t))^0.55)))
@@ -340,7 +351,7 @@ Se calcula la prima unitaria:
 <<>>=
 EZ <- integrate(fx, VALOR_MIN, VALOR_MAX)$value 
 @
-Prima unitaria: \Sexpr{round(EZ,digits=NRO_DECIMALES)}
+Prima unitaria ($\Ax*{\Sexpr{EDAD}}$): \Sexpr{round(EZ,digits=NRO_DECIMALES)}
 
 Se calcula la prima
 <<>>=
