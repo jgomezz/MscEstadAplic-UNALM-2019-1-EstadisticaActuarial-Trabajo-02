@@ -295,7 +295,7 @@ Es un seguro vitalicio continuo :
 
     \[ \Ax*{x} = \int_{0}^\infty e^{-\delta*t}f_{T(x)}(t)\,\mathrm{dt}\]
     
-    Donde:  $\delta=ln(1+TEA)$
+    Donde:  $\delta=log(1+TEA)$
 
     \[ F_{T(x)}(t) = _{t}q_{x} = 1 - \frac{S_{(x+t)}}{S_{(x)}} \]
   
