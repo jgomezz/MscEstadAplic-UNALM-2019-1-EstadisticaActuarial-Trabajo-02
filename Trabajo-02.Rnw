@@ -17,34 +17,214 @@
 
 \SweaveOpts{concordance=TRUE}
 
+Se instalan las librerías necesarias
+<<echo=false>>=
+# Función para instalar librerías
+rpak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg,repos = "http://cran.us.r-project.org", dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
+
+#Se cargan las librerias para el trabajo
+packages <- c("lifecontingencies","FinCal")
+rpak(packages)
+@
  % \item  $\actuarialangle{n}$
  % \item  $\actsymb{A}{x}$
  % \item  $\actsymb[n]{A}{x}$
  % \item  $\actsymb[n][2]{A}{x}$
  % \item  $\actsymb[n][2]{A}{x}[(m)]$
 
+<<>>=
+#Define constantes
+NRO_DECIMALES <- 5
+@
+
+<<echo=false>>=
+# Se evita el uso de notación científica
+options(scipen=999)
+# Se cargan librerias
+library(lifecontingencies)
+# Se cargan tablas de mortandad de la SBS
+TablaSBS <- read.table("TMSPP2017.txt",T)
+attach(TablaSBS)
+#head(TablaSBS)
+@
+
+
 \begin{enumerate}
 
 \item (2.0 puntos) Rosa, una joven sana, nacida en enero de 1990, desea contratar un seguro de vida de tal manera que sus beneficiarios reciban 150 mil soles cuando ella fallezca. Considerando una TNA de 1.25\% capitalizable semestralmente, calcule el valor de la prima justa.
 
+\textbf{Soluci\'on:}
+
+Es un seguro de vida completo o seguro vitalicio, por lo tanto vamos a calcular la prima unitaria: $ E(Z_{x}) = \actsymb{A}{x} $, donde x es su edad 
+
+Se calcula el TEA
 \begin{itemize}
 \item $TNA = 0.0125$
 \item $TEA = (1 + \frac{TNA}{2})^2 - 1$
+\item Cobertura = S/150,000
 \end{itemize}
 
 <<>>=
 TNA <- 0.0125
 TEA <- (1+TNA/2)^2-1
-
-
 @
 
-\Sexpr{TEA}
+TEA = \Sexpr{round(TEA,digits=NRO_DECIMALES)}
 
-\item (3.0 puntos) Christian, un se\~nor inv\'alido, nacido en setiembre de 1969, desea contratar un seguro de vida de tal manera que sus beneficiarios reciban 150 mil soles cuando ella fallezca, siempre y cuando ella tenga al menos 60 pero no m\'as de 80 años. Considerando una TNA de 1:25\% capitalizable semestralmente, calcule el valor de la prima justa.
+<<>>=
+# Se personaliza la tabla de mortandad
+EDAD      <- 2019-1990
+OFFSET    <- 2019-2017
+@
+
+\begin{itemize}
+\item OFFSET = \Sexpr{OFFSET}
+\item EDAD = \Sexpr{EDAD} a\~nos
+\end{itemize}
+
+<<>>=
+MS2019 <- probs2lifetable(probs = SPPS2017M*((1-AaxM)^(OFFSET)), 
+                          radix = 10^6, type = "qx",  name = "MS2019")
+head(MS2019)
+@
+
+Se calcula la prima unitaria:
+<<>>=
+EZ <- Axn(MS2019, x=EDAD, i=TEA)
+@
+
+Prima unitaria ($\actsymb{A}{\Sexpr{EDAD}}$) : S/\Sexpr{round(EZ,digits=NRO_DECIMALES)}
+
+Se calcula la prima:
+<<>>=
+COBERTURA <- 150000
+Prima <- COBERTURA * EZ
+@
+
+Prima  : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
 
 
-\item (2.0 puntos) Fernando, un se\~nor sano, nacido en diciembre de 1950, desea contratar un seguro de tal manera que reciba 15 mil soles si alcanza la edad de 90 años. Considere que la tasa efectiva trimestral de la aseguradora es de 1:5\%. Calcule el valor de la prima justa.
+\item (3.0 puntos) Christian, un se\~nor inv\'alido, nacido en setiembre de 1969, desea contratar un seguro de vida de tal manera que sus beneficiarios reciban 150 mil soles cuando ella fallezca, siempre y cuando el tenga al menos 60 pero no m\'as de 80 años. Considerando una TNA de 1.25\% capitalizable semestralmente, calcule el valor de la prima justa.
+
+\textbf{Soluci\'on:}
+
+Es un seguro de vida diferido: $\Ax[m|]{\term{x}{n}}$
+  
+Datos del problema:
+
+\begin{itemize}
+\item COBERTURA = S/150,000
+\item EDAD = x = 2019 - 1969 = 50 a\~nos
+\item TNA = 1.25\%
+\item Se aplica cuando Christian tenga al menos 60 pero no m\'as de 80 años, es decir el seguro se aplicara cuando fallezca entre las edades de 60 y 79 a\~nos. 
+\begin{itemize}
+\item x + m = 60     => m = 60 - x = 60 - EDAD
+\item x + m + n = 79 => n = 79 - ( x + m ) = 79 - 60  = 19 a\~nos 
+\end{itemize}
+\end{itemize}
+
+Calculo del interes:
+<<>>=
+TNA <- 0.0125
+TEA <- (1+TNA/2)^2-1
+@
+
+TEA = \Sexpr{round(TEA,digits=NRO_DECIMALES)}
+
+Uso de tabla de mortandad:
+<<>>=
+# Se personaliza la tabla de mortandad 
+EDAD      <- 2019-1969
+OFFSET    <- 2019-2017
+@
+
+\begin{itemize}
+\item OFFSET = \Sexpr{OFFSET}
+\item EDAD = \Sexpr{EDAD} a\~nos
+\end{itemize}
+
+<<>>=
+HI2019 <- probs2lifetable(probs = SPPI2017H*((1-AaxH)^(OFFSET)), 
+                          radix = 10^6, type = "qx",  name = "HI2019")
+head(HI2019)
+@
+
+Se calcula la prima unitaria:
+<<>>=
+m <- 60 - EDAD
+n <- 19
+EZ <- Axn(HI2019, x=EDAD, m=m, n=n, i=TEA)
+@
+m : \Sexpr{m} \\
+n : \Sexpr{n} \\
+Prima unitaria ($\Ax[\Sexpr{m}|]{\term{\Sexpr{EDAD}}{\Sexpr{n}}}$) : S/\Sexpr{round(EZ,digits=NRO_DECIMALES)}
+
+Se calcula la prima:
+<<>>=
+COBERTURA <- 150000
+Prima <- COBERTURA * EZ
+@
+
+Prima  : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
+
+\item (2.0 puntos) Fernando, un se\~nor sano, nacido en diciembre de 1950, desea contratar un seguro de tal manera que reciba 15 mil soles si alcanza la edad de 90 años. Considere que la tasa efectiva trimestral de la aseguradora es de 1.5\%. Calcule el valor de la prima justa.
+
+\textbf{Soluci\'on:}
+
+Es un seguro dota puro: $\Ax{\pureendow{x}{n}}$
+
+Datos del problema:
+\begin{itemize}
+\item COBERTURA = S/15,000
+\item EDAD = x = 2019 - 1950 = 69 a\~nos
+\item TET = 1.5\%
+\item Cobrara la cobertura cuando tenga 90 a\~nos => n = 90 - EDAD  
+\end{itemize}
+
+Calculo del TEA:
+<<>>=
+TET <- 0.015
+TEA <- (1+TET)^4-1
+@
+TEA = \Sexpr{round(TEA,digits=NRO_DECIMALES)}
+Uso de tabla de mortandad:
+<<>>=
+# Se personaliza la tabla de mortandad 
+EDAD      <- 2019-1950
+OFFSET    <- 2019-2017
+@
+
+\begin{itemize}
+\item OFFSET = \Sexpr{OFFSET}
+\item EDAD = \Sexpr{EDAD} a\~nos
+\end{itemize}
+
+<<>>=
+HS2019 <- probs2lifetable(probs = SPPS2017H*((1-AaxH)^(OFFSET)), 
+                          radix = 10^6, type = "qx",  name = "HS2019")
+head(HI2019)
+@
+
+Se calcula la prima unitaria:
+<<>>=
+n <- 90 - EDAD
+EZ <- Exn(HS2019, x=EDAD, n=n, i=TEA)
+@
+n : \Sexpr{n} \\
+Prima unitaria ($\Ax{\pureendow{\Sexpr{EDAD}}{\Sexpr{n}}}$) : S/\Sexpr{round(EZ,digits=NRO_DECIMALES)}
+
+Se calcula la prima:
+<<>>=
+COBERTURA <- 15000
+Prima <- COBERTURA * EZ
+@
+
+Prima  : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
 
 \item (2.0 puntos) Una mujer inv\'alida de 43 años paga una prima de 17002.39 soles para recibir un beneficio de S soles si se encuentra viva dentro de 30 años. Considere una tasa de inter\'es efectiva de 3\% anual y determine el valor de S.
 
