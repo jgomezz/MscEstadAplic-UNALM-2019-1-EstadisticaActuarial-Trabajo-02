@@ -283,6 +283,75 @@ Beneficio : S/\Sexpr{round(Beneficio,digits=NRO_DECIMALES)}
 \item El c\'alculo de la prima justa para este seguro.
 \end {itemize}
 
+\textbf{Soluci\'on:} Se plantea el caso solicitado
+
+\textit{"Una mujer sana de 45 a\~nos (nacida en 1974) desea contratar un seguro dota 
+de 15 a\~nos y un monto de 120,000 soles. Considere una tasa nominal de 7.0\% capitalizable mensual. Se desea obtener la prima para este seguro."}
+
+\begin {itemize}
+\item Conversi\'on de tasas (compuesta, nominal, efectiva).
+
+Calculo del TEA:
+<<>>=
+TNA <- 0.07   # Tasa nominal anual
+TEA <- (1+TNA/12)^12-1
+@
+TEA = \Sexpr{round(TEA,digits=NRO_DECIMALES)}
+
+\item Seguro de vida dotal de n a\~nos (especifique n).
+
+\[  \Ax{x:\angl{n}} =  \Ax{\term{x}{n}} + \Ax{\pureendow{x}{n}} \]
+
+Datos del seguro
+<<>>=
+EDAD <- 45
+n    <- 15
+@
+
+Para este caso:
+\begin{itemize}
+\item n = \Sexpr{n} a\~nos
+\item EDAD = x = \Sexpr{EDAD} a\~nos
+\end{itemize}
+
+\[  \Ax{\Sexpr{EDAD}:\angl{\Sexpr{n}}} =  \Ax{\term{\Sexpr{EDAD}}{\Sexpr{n}}} + \Ax{\pureendow{\Sexpr{EDAD}}{\Sexpr{n}}} \]
+
+\item El c\'alculo de la prima justa para este seguro.
+
+Uso de tabla de mortandad:
+<<>>=
+# Se personaliza la tabla de mortandad 
+OFFSET    <- 2019-2017
+@
+
+\begin{itemize}
+\item OFFSET = \Sexpr{OFFSET}
+\end{itemize}
+
+<<>>=
+MS2019 <- probs2lifetable(probs = SPPS2017M*((1-AaxM)^(OFFSET)), 
+                          radix = 10^6, type = "qx",  name = "MS2019")
+head(MS2019)
+@
+
+Se calcula la prima unitaria:
+<<>>=
+EZ  <- AExn(MS2019, x=EDAD, n=n, i=TEA)
+@
+
+Prima unitaria ($\Ax{\Sexpr{EDAD}:\angl{\Sexpr{n}}}$) : S/\Sexpr{round(EZ,digits=NRO_DECIMALES)}
+
+Se calcula la prima:
+<<>>=
+COBERTURA   <- 120000
+Prima       <- COBERTURA*EZ
+@
+
+Prima : S/\Sexpr{round(Prima,digits=NRO_DECIMALES)}
+
+\end {itemize}
+
+
 \item (3.0 puntos) El tiempo de vida de una poblaci\'on sigue la funci\'on de supervivencia:
 
 \[ S(x) = (1-\frac{x}{96})^{0.45}\]
