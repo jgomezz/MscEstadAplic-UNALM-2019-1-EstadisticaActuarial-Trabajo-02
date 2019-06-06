@@ -17,6 +17,21 @@
 
 \SweaveOpts{concordance=TRUE}
 
+Indicaciones:
+\begin {itemize}
+\item Resuelva de manera individual los ejercicios utilizando R (Puntaje total: 16 puntos)
+\item Debe entregar, mediante el link del aula virtual, una carpeta comprimida conteniendo:
+\begin {itemize}
+\item Un archivo Word o LATEXcon la redacción de respuestas (incluyendo el uso de
+la notación actuarial)
+\item Un proyecto de RStudio con sus códigos y tabla(s) de vida
+\end{itemize}
+\item  Fecha de entrega: 05/06/19
+\item  Penalidad: 1 punto menos por día atrasado.
+\end{itemize}
+Realice todos los cálculos para el mes de junio del 2019.\\
+
+
 Se instalan las librerías necesarias
 <<echo=false>>=
 # Función para instalar librerías
@@ -36,6 +51,8 @@ rpak(packages)
  % \item  $\actsymb[n]{A}{x}$
  % \item  $\actsymb[n][2]{A}{x}$
  % \item  $\actsymb[n][2]{A}{x}[(m)]$
+
+
 
 <<>>=
 #Define constantes
@@ -119,12 +136,12 @@ Datos del problema:
 
 \begin{itemize}
 \item COBERTURA = S/150,000
-\item EDAD = x = 2019 - 1969 = 50 a\~nos
+\item EDAD = x = 2019/Junio - 1969/Septiembre = 49 a\~nos cumplidos
 \item TNA = 1.25\%
-\item Se aplica cuando Christian tenga al menos 60 pero no m\'as de 80 años, es decir el seguro se aplicara cuando fallezca entre las edades de 60 y 79 a\~nos. 
+\item Se aplica cuando Christian tenga al menos 60 pero no m\'as de 80 años, es decir el seguro se aplicara cuando fallezca entre las edades de 60 y 80 a\~nos. 
 \begin{itemize}
 \item x + m = 60     => m = 60 - x = 60 - EDAD
-\item x + m + n = 79 => n = 79 - ( x + m ) = 79 - 60  = 19 a\~nos 
+\item x + m + n = 80 => n = 80 - ( x + m ) = 80 - 60  = 20 a\~nos 
 \end{itemize}
 \end{itemize}
 
@@ -139,7 +156,7 @@ TEA = \Sexpr{round(TEA,digits=NRO_DECIMALES)}
 Uso de tabla de mortandad:
 <<>>=
 # Se personaliza la tabla de mortandad 
-EDAD      <- 2019-1969
+EDAD      <- 49   # 2019/Junio - 1969/Septiembre
 OFFSET    <- 2019-2017
 @
 
@@ -157,7 +174,7 @@ head(HI2019)
 Se calcula la prima unitaria:
 <<>>=
 m <- 60 - EDAD
-n <- 19
+n <- 20
 EZ <- Axn(HI2019, x=EDAD, m=m, n=n, i=TEA)
 @
 m : \Sexpr{m} \\
@@ -181,7 +198,7 @@ Es un seguro dotal puro: $\Ax{\pureendow{x}{n}}$
 Datos del problema:
 \begin{itemize}
 \item COBERTURA = S/15,000
-\item EDAD = x = 2019 - 1950 = 69 a\~nos
+\item EDAD = x = 2019 Junio - 1950 Diciembre = 68 a\~nos
 \item TET = 1.5\%
 \item Cobrara la cobertura cuando tenga 90 a\~nos => n = 90 - EDAD  
 \end{itemize}
@@ -195,7 +212,7 @@ TEA = \Sexpr{round(TEA,digits=NRO_DECIMALES)}
 Uso de tabla de mortandad:
 <<>>=
 # Se personaliza la tabla de mortandad 
-EDAD      <- 2019-1950
+EDAD      <- 68 # 2019\Junio -1950\Diciembre
 OFFSET    <- 2019-2017
 @
 
